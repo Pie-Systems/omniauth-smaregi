@@ -30,7 +30,6 @@ module OmniAuth
       def build_access_token
         client.auth_code.get_token(
           request.params["code"],
-          verifier,
           {
             redirect_uri: callback_url
           }.merge(token_params.to_hash(symbolize_keys: true)), deep_symbolize(options.auth_token_params)
