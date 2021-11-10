@@ -3,23 +3,46 @@
 require "spec_helper"
 
 RSpec.describe OmniAuth::Strategies::Smaregi do
+  let(:custom_options) { {} }
   subject do
-    described_class.new({})
+    described_class.new(nil, custom_options)
   end
 
+  before { subject.setup_phase }
+
   describe "Client options" do
-    let(:options) { subject.options.client_options }
+    context "when sandbox option true" do
+      let(:custom_options) { { sandbox: true } }
+      let(:options) { subject.options.client_options }
 
-    it "has correct site" do
-      expect(options.site).to eq "https://id.smaregi.dev"
+      it "has correct site" do
+        expect(options.site).to eq "https://id.smaregi.dev"
+      end
+
+      it "has correct authorize url" do
+        expect(options.authorize_url).to eq "https://id.smaregi.dev/authorize"
+      end
+
+      it "has correct token url" do
+        expect(options.token_url).to eq "https://id.smaregi.dev/authorize/token"
+      end
     end
 
-    it "has correct authorize url" do
-      expect(options.authorize_url).to eq "https://id.smaregi.dev/authorize"
-    end
+    context "when sandbox option false" do
+      let(:custom_options) { { sandbox: false } }
+      let(:options) { subject.options.client_options }
 
-    it "has correct token url" do
-      expect(options.token_url).to eq "https://id.smaregi.dev/authorize/token"
+      it "has correct site" do
+        expect(options.site).to eq "https://id.smaregi.jp"
+      end
+
+      it "has correct authorize url" do
+        expect(options.authorize_url).to eq "https://id.smaregi.jp/authorize"
+      end
+
+      it "has correct token url" do
+        expect(options.token_url).to eq "https://id.smaregi.jp/authorize/token"
+      end
     end
   end
 
