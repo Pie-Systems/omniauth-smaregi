@@ -8,6 +8,7 @@ module OmniAuth
       SANDBOX_SITE = "https://id.smaregi.dev"
       SANDBOX_AUTHORIZE_URL = "https://id.smaregi.dev/authorize"
       SANDBOX_TOKEN_URL = "https://id.smaregi.dev/authorize/token"
+
       option :name, "smaregi"
 
       option :client_options, {
@@ -19,6 +20,8 @@ module OmniAuth
       option :authorize_options, [:scope]
 
       option :sandbox, false
+
+      option :fail_path, ""
 
       uid { raw_info["contract"]["id"] }
 
@@ -38,16 +41,16 @@ module OmniAuth
           options.client_options[:authorize_url] = SANDBOX_AUTHORIZE_URL
           options.client_options[:token_url] = SANDBOX_TOKEN_URL
         end
+
         super
       end
 
-      def build_access_token
-        client.auth_code.get_token(
-          request.params["code"],
-          {
-            redirect_uri: callback_url
-          }.merge(token_params.to_hash(symbolize_keys: true)), deep_symbolize(options.auth_token_params)
-        )
+      def fail!(_message_key, _exception = nil)
+        if options.fail_path
+          redirect(options.fail_path)
+        else
+          super
+        end
       end
     end
   end

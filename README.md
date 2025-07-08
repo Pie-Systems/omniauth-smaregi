@@ -9,7 +9,7 @@ Read the Smaregi API documentation for more details: https://developers.smaregi.
 Add to your `Gemfile`:
 
 ```ruby
-gem 'omniauth-smaregi'
+gem "omniauth-smaregi"
 ```
 
 Then `bundle install`.
@@ -22,14 +22,14 @@ Here's a quick example, adding the middleware to a Rails app in `config/initiali
 
 ```ruby
 Rails.application.config.middleware.use OmniAuth::Builder do
-  provider :smaregi, ENV['SMAREGI_CLIENT_ID'], ENV['SMAREGI_CLIENT_SECRET'], scope: 'openapi'
+  provider :smaregi, 
+    ENV["SMAREGI_CLIENT_ID"], 
+    ENV["SMAREGI_CLIENT_SECRET"], 
+    scope: "openapi",
+    sandbox: Rails.env.development? || Rails.env.test?, # optional
+    fail_path: "/some/failure/path" # optional       
 end
 ```
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/.
-
 
 ## License
 

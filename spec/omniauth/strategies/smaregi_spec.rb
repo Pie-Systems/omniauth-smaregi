@@ -67,4 +67,26 @@ RSpec.describe OmniAuth::Strategies::Smaregi do
       expect(subject.raw_info).to eq(parsed_response)
     end
   end
+
+  describe "fail!" do
+    before do
+      allow(subject).to receive(:request).and_return(double(params: { "error" => "access_denied" }))
+    end
+
+    context "when :fail_path option is present" do
+      let(:custom_options) { { fail_path: "integrations/smaregi" } }
+
+      it "redirects to fail_path" do
+        expect(subject).to receive(:redirect).with("integrations/smaregi")
+        subject.callback_phase
+      end
+    end
+
+    context "when :fail_path option is not present" do
+      it "redirects to default path" do
+        expect(subject).to receive(:redirect).with("")
+        subject.callback_phase
+      end
+    end
+  end
 end
